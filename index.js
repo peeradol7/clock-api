@@ -6,10 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files (images) from the "Clock" folder
 app.use('/Clock', express.static(path.join(__dirname, 'Clock')));
 
-// Image and number data
 const clockImages = Array.from({ length: 20 }, (_, index) =>
   `clock${index + 2}-removebg-preview.png`
 );
@@ -22,19 +20,24 @@ const innerNumbers = [
 
 // Current state variables
 let currentImageIndex = 2;
-let currentNumberIndex = 0;
 let rotationCounter = 0;
 
 // Calculate the initial rotation time (23:56)
 const initialRotationTime = new Date();
 initialRotationTime.setHours(23, 56, 0, 0);
 
-// Ensure the initial time is in the future
 if (initialRotationTime < new Date()) {
   initialRotationTime.setDate(initialRotationTime.getDate() + 1);
 }
 
 let nextRotationTime = initialRotationTime.getTime();
+
+// Function to rotate the numbers
+function rotateInnerNumbers() {
+  // Shift the first number to the end of the array
+  const firstNumber = innerNumbers.shift();
+  innerNumbers.push(firstNumber);
+}
 
 // Function to rotate data
 function rotateClockData() {
@@ -42,13 +45,13 @@ function rotateClockData() {
 
   // Check if it's time to rotate
   if (now >= nextRotationTime) {
-    // Rotate image and numbers
     rotationCounter++;
+
+    // Rotate image index
     currentImageIndex = (currentImageIndex + 1) % clockImages.length;
 
-    if (rotationCounter % 2 === 0) {
-      currentNumberIndex = (currentNumberIndex + 1) % innerNumbers.length;
-    }
+    // Rotate numbers
+    rotateInnerNumbers();
 
     // Calculate the next rotation time (1360 minutes later)
     nextRotationTime += 1360 * 60 * 1000; // 1360 minutes in milliseconds
@@ -62,7 +65,7 @@ app.get('/clock-data', (req, res) => {
   res.json({
     image: clockImages[currentImageIndex],
     numbers: {
-      current: innerNumbers[currentNumberIndex],
+      current: innerNumbers.slice(0, 21), // Send the rotated numbers
       fullList: innerNumbers
     },
     timestamp: new Date().toISOString(),
