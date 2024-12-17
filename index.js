@@ -9,43 +9,54 @@ app.use(express.json());
 // Serve static files (images) from the "Clock" folder
 app.use('/Clock', express.static(path.join(__dirname, 'Clock')));
 
-// ข้อมูลรูปภาพ
-const clockImages = Array.from({ length: 20 }, (_, index) => 
+// Image and number data
+const clockImages = Array.from({ length: 20 }, (_, index) =>
   `clock${index + 2}-removebg-preview.png`
 );
 
-// เลขไทย
 const innerNumbers = [
   "๔", "๗", "๑", "๒", "๔", "๗", "๗", "๑", 
   "๖", "๕", "๕", "๕", "๓", "๒", "๔", "๑", 
   "๖", "๓", "๖", "๓", "๒"
 ];
 
-// ตัวแปรเก็บสถานะปัจจุบัน
+// Current state variables
 let currentImageIndex = 2;
 let currentNumberIndex = 0;
 let rotationCounter = 0;
 
+// Calculate the initial rotation time (23:56)
+const initialRotationTime = new Date();
+initialRotationTime.setHours(23, 56, 0, 0);
+
+// Ensure the initial time is in the future
+if (initialRotationTime < new Date()) {
+  initialRotationTime.setDate(initialRotationTime.getDate() + 1);
+}
+
+let nextRotationTime = initialRotationTime.getTime();
+
+// Function to rotate data
 function rotateClockData() {
-  // นับรอบการหมุน
-  rotationCounter++;
+  const now = Date.now();
 
-  // สลับรูปทุก 5 วินาที
-  currentImageIndex = (currentImageIndex + 1) % clockImages.length;
+  // Check if it's time to rotate
+  if (now >= nextRotationTime) {
+    // Rotate image and numbers
+    rotationCounter++;
+    currentImageIndex = (currentImageIndex + 1) % clockImages.length;
 
-  // สลับตำแหน่งเลขทุก 10 วินาที
-  if (rotationCounter % 2 === 0) {
-    currentNumberIndex = (currentNumberIndex + 1) % innerNumbers.length;
-  }
+    if (rotationCounter % 2 === 0) {
+      currentNumberIndex = (currentNumberIndex + 1) % innerNumbers.length;
+    }
 
-  // รีเซ็ตตัวนับเมื่อถึง 10
-  if (rotationCounter >= 10) {
-    rotationCounter = 0;
+    // Calculate the next rotation time (1360 minutes later)
+    nextRotationTime += 1360 * 60 * 1000; // 1360 minutes in milliseconds
   }
 }
 
-// สร้าง Interval เพื่อหมุนข้อมูล
-setInterval(rotateClockData, 5000);
+// Polling interval to check rotation
+setInterval(rotateClockData, 1000);
 
 app.get('/clock-data', (req, res) => {
   res.json({
@@ -55,7 +66,8 @@ app.get('/clock-data', (req, res) => {
       fullList: innerNumbers
     },
     timestamp: new Date().toISOString(),
-    rotationCounter: rotationCounter
+    rotationCounter: rotationCounter,
+    nextRotationTime: new Date(nextRotationTime).toISOString()
   });
 });
 
