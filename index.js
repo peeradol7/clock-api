@@ -6,12 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files (images) from the "public" folder
-app.use('/images', express.static(path.join(__dirname, 'Clock')));
+// Serve static files (images) from the "Clock" folder
+app.use('/Clock', express.static(path.join(__dirname, 'Clock')));
 
 // ข้อมูลรูปภาพ
 const clockImages = Array.from({ length: 20 }, (_, index) => 
-  `./Clock/clock${index + 2}-removebg-preview.png`
+  `/Clock/clock${index + 2}-removebg-preview.png`
 );
 
 // เลขไทย
