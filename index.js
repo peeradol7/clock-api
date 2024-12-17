@@ -19,7 +19,7 @@ const innerNumbers = [
 ];
 
 // Current state variables
-let currentImageIndex = 2;
+let currentImageIndex = 1;
 let rotationCounter = 0;
 
 // Calculate the initial rotation time (23:56)
