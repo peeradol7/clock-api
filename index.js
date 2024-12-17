@@ -65,8 +65,7 @@ app.get('/clock-data', (req, res) => {
   res.json({
     image: clockImages[currentImageIndex],
     numbers: {
-      current: innerNumbers.slice(0, 21), // Send the rotated numbers
-      fullList: innerNumbers
+      current: innerNumbers.slice(0, 21)
     },
     timestamp: new Date().toISOString(),
     rotationCounter: rotationCounter,
