@@ -11,7 +11,7 @@ app.use('/Clock', express.static(path.join(__dirname, 'Clock')));
 
 // ข้อมูลรูปภาพ
 const clockImages = Array.from({ length: 20 }, (_, index) => 
-  `/Clock/clock${index + 2}-removebg-preview.png`
+  `clock${index + 2}-removebg-preview.png`
 );
 
 // เลขไทย
