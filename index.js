@@ -24,7 +24,7 @@ let rotationCounter = 0;
 
 // Calculate the initial rotation time (23:56)
 const initialRotationTime = new Date();
-initialRotationTime.setHours(23, 56, 0, 0);
+initialRotationTime.setHours(7, 43, 0, 0);
 
 if (initialRotationTime < new Date()) {
   initialRotationTime.setDate(initialRotationTime.getDate() + 1);
