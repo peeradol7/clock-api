@@ -27,7 +27,7 @@ let currentImageIndex = 0;
 let rotationCounter = 0;
 
 // Calculate initial rotation time (23:56 in Asia/Bangkok)
-let initialRotationTime = moment.tz('8:00', 'HH:mm', 'Asia/Bangkok');
+let initialRotationTime = moment.tz('23:56', 'HH:mm', 'Asia/Bangkok');
 if (initialRotationTime.isBefore(moment())) {
   initialRotationTime.add(1, 'day'); // เพิ่มวันถ้าผ่านเวลา 23:56 ของวันนี้
 }
