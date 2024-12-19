@@ -26,7 +26,7 @@ const innerNumbers = [
 let currentImageIndex = 0;
 let rotationCounter = 0;
 
-let initialRotationTime = moment.tz('09:13', 'HH:mm', 'Asia/Bangkok');
+let initialRotationTime = moment.tz('09:25', 'HH:mm', 'Asia/Bangkok');
 if (initialRotationTime.isBefore(moment())) {
   initialRotationTime.add(1, 'day'); 
   console.log("Time is "+initialRotationTime);
