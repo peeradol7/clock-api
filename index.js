@@ -1,21 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const moment = require('moment-timezone'); // นำเข้า moment-timezone
+const moment = require('moment-timezone');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Static files
-app.use('/Clock', express.static(path.join(__dirname, 'Clock')));
+const staticDir = path.join(__dirname, 'Clock');
+if (fs.existsSync(staticDir)) {
+  app.use('/Clock', express.static(staticDir));
+} else {
+  console.warn("Static directory 'Clock' not found. Static files will not be served.");
+}
 
-// Clock images
-const clockImages = Array.from({ length: 20 }, (_, index) =>
-  `clock${index + 2}-removebg-preview.png`
-);
-
-// Inner numbers
+// Clock images and inner numbers
+const clockImages = Array.from({ length: 20 }, (_, index) => `clock${index + 2}-removebg-preview.png`);
 const innerNumbers = [
   "๔", "๗", "๑", "๒", "๔", "๗", "๗", "๑",
   "๖", "๕", "๕", "๕", "๓", "๒", "๔", "๑",
@@ -29,8 +31,7 @@ let rotationCounter = 0;
 // Calculate initial rotation time (23:56 in Asia/Bangkok)
 let initialRotationTime = moment.tz('23:56', 'HH:mm', 'Asia/Bangkok');
 if (initialRotationTime.isBefore(moment())) {
-  initialRotationTime.add(1, 'day'); 
-  console.log("Time is "+initialRotationTime);
+  initialRotationTime.add(1, 'day');
 }
 let nextRotationTime = initialRotationTime.valueOf();
 
@@ -47,14 +48,8 @@ function rotateClockData() {
   // Check if it's time to rotate
   if (now >= nextRotationTime) {
     rotationCounter++;
-
-    // Rotate image index
     currentImageIndex = (currentImageIndex + 1) % clockImages.length;
-
-    // Rotate numbers
     rotateInnerNumbers();
-
-    // Calculate the next rotation time (1360 minutes later)
     nextRotationTime += 1360 * 60 * 1000; // 1360 minutes in milliseconds
   }
 }
@@ -69,9 +64,9 @@ app.get('/clock-data', (req, res) => {
     numbers: {
       current: innerNumbers.slice(0, 21)
     },
-    timestamp: moment().tz('Asia/Bangkok').format(), // Current time in Bangkok
+    timestamp: moment().tz('Asia/Bangkok').format(),
     rotationCounter: rotationCounter,
-    nextRotationTime: moment(nextRotationTime).tz('Asia/Bangkok').format() // Next rotation time in Bangkok
+    nextRotationTime: moment(nextRotationTime).tz('Asia/Bangkok').format()
   });
 });
 
@@ -87,4 +82,13 @@ app.get('/initial-data', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// Error logging
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
 });
