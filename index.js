@@ -26,10 +26,10 @@ const innerNumbers = [
 let currentImageIndex = 0;
 let rotationCounter = 0;
 
-// Calculate initial rotation time (23:56 in Asia/Bangkok)
-let initialRotationTime = moment.tz('23:56', 'HH:mm', 'Asia/Bangkok');
+let initialRotationTime = moment.tz('09:13', 'HH:mm', 'Asia/Bangkok');
 if (initialRotationTime.isBefore(moment())) {
-  initialRotationTime.add(1, 'day'); // เพิ่มวันถ้าผ่านเวลา 23:56 ของวันนี้
+  initialRotationTime.add(1, 'day'); 
+  console.log("Time is "+initialRotationTime);
 }
 let nextRotationTime = initialRotationTime.valueOf();
 
@@ -54,7 +54,7 @@ function rotateClockData() {
     rotateInnerNumbers();
 
     // Calculate the next rotation time (1360 minutes later)
-    nextRotationTime += 1360 * 60 * 1000; // 1360 minutes in milliseconds
+    nextRotationTime += 1436 * 60 * 1000; // 1360 minutes in milliseconds
   }
 }
 
