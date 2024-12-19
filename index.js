@@ -26,7 +26,8 @@ const innerNumbers = [
 let currentImageIndex = 0;
 let rotationCounter = 0;
 
-let initialRotationTime = moment.tz('09:25', 'HH:mm', 'Asia/Bangkok');
+// Calculate initial rotation time (23:56 in Asia/Bangkok)
+let initialRotationTime = moment.tz('23:56', 'HH:mm', 'Asia/Bangkok');
 if (initialRotationTime.isBefore(moment())) {
   initialRotationTime.add(1, 'day'); 
   console.log("Time is "+initialRotationTime);
@@ -54,7 +55,7 @@ function rotateClockData() {
     rotateInnerNumbers();
 
     // Calculate the next rotation time (1360 minutes later)
-    nextRotationTime += 1436 * 60 * 1000; // 1360 minutes in milliseconds
+    nextRotationTime += 1360 * 60 * 1000; // 1360 minutes in milliseconds
   }
 }
 
