@@ -29,11 +29,11 @@ let currentImageIndex = 0;
 let rotationCounter = 0;
 
 // Calculate initial rotation time (23:56 in Asia/Bangkok)
-let initialRotationTime = moment.tz('23:56', 'HH:mm', 'Asia/Bangkok');
+let initialRotationTime = moment.tz('Asia/Bangkok').startOf('hour').add(1, 'hour');
+let nextRotationTime = initialRotationTime.valueOf();
 if (initialRotationTime.isBefore(moment())) {
   initialRotationTime.add(1, 'day');
 }
-let nextRotationTime = initialRotationTime.valueOf();
 
 // Rotate numbers
 function rotateInnerNumbers() {
@@ -50,7 +50,7 @@ function rotateClockData() {
     rotationCounter++;
     currentImageIndex = (currentImageIndex + 1) % clockImages.length;
     rotateInnerNumbers();
-    nextRotationTime += 1360 * 60 * 1000; // 1360 minutes in milliseconds
+    nextRotationTime += 60 * 60 * 1000; // 1 hour in milliseconds
   }
 }
 
